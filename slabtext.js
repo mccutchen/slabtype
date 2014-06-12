@@ -1,24 +1,12 @@
-function layout(el, width, height, fontAspectRatio, charsPerLine) {
-    var text = el.innerText;
-
+function layout(el, width, height, targetLineLength) {
     // First, use Erik Loyer's slabtype algorithm to split our input text into
-    // suitable lines. The font's aspect ratio and the desired number of
-    // characters per line must be provided instead of being inferred.
+    // suitable lines. We depart from the original algorithm by requiring the
+    // ideal line length to be given instead of automagically calculated.
     //
     // http://erikloyer.com/index.php/blog/the_slabtype_algorithm_part_1_background/
-    var lineAspectRatio = fontAspectRatio * charsPerLine;
-    var targetLineHeight = width / lineAspectRatio;
-    var targetLineCount = Math.floor(height / targetLineHeight);
-    var targetLineLength = Math.round(text.length / targetLineCount);
-
-    console.log('Text: %o (%d)', text, text.length);
-    console.log('Container: %d x %d', width, height);
-    console.log('Line aspect ratio:', lineAspectRatio);
-    console.log('Line height:', targetLineHeight);
-    console.log('Line count:', targetLineCount);
-    console.log('Line length:', targetLineLength);
-
+    var text = el.innerText;
     var words = text.split(/\s+/);
+
     var lines = [];
     var preText, postText, lineText;
     var preDiff, postDiff;
@@ -35,6 +23,8 @@ function layout(el, width, height, fontAspectRatio, charsPerLine) {
             }
         }
 
+        preText = preText.trim();
+        postText = postText.trim();
         preDiff = targetLineLength - preText.length;
         postDiff = postText.length - targetLineLength;
 
@@ -44,7 +34,7 @@ function layout(el, width, height, fontAspectRatio, charsPerLine) {
         } else {
             lineText = postText;
         }
-        lines.push(lineText.trim());
+        lines.push(lineText);
     }
 
     // Add our lines to the DOM, where each line is wrapped in a <span> and all
