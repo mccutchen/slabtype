@@ -12,6 +12,7 @@ function layout(el, width, height, fontAspectRatio, charsPerLine) {
     var targetLineLength = Math.round(text.length / targetLineCount);
 
     console.log('Text: %o (%d)', text, text.length);
+    console.log('Container: %d x %d', width, height);
     console.log('Line aspect ratio:', lineAspectRatio);
     console.log('Line height:', targetLineHeight);
     console.log('Line count:', targetLineCount);
@@ -36,7 +37,8 @@ function layout(el, width, height, fontAspectRatio, charsPerLine) {
 
         preDiff = targetLineLength - preText.length;
         postDiff = postText.length - targetLineLength;
-        if (preDiff < postDiff) {
+
+        if (preText && preDiff < postDiff) {
             lineText = preText;
             wordIndex--;
         } else {
@@ -52,13 +54,13 @@ function layout(el, width, height, fontAspectRatio, charsPerLine) {
     for (var i = 0; i < lines.length; i++) {
         line = lines[i];
         spans.push(
-            '<span style="position:absolute; -webkit-transform-origin: 0 0;">' +
+            '<span style="position:absolute; top: 0; left: 0; -webkit-transform-origin: 0 0; white-space: nowrap">' +
             line +
             '</span>'
         );
     }
     el.innerHTML = (
-        '<div class="slabtext" style="position:relative;">' +
+        '<div class="slabtext" style="position:relative; -webkit-transform-origin: 0 0;">' +
         spans.join('\n') +
         '</div>'
     );
@@ -81,15 +83,24 @@ function layout(el, width, height, fontAspectRatio, charsPerLine) {
         }
     }
 
-    // Center the lines vertically
-    var offset = (height - totalHeight) / 2;
     var wrapper = el.querySelector('.slabtext');
-    if (offset > 0) {
+    var offset;
+    if (totalHeight <= height) {
+        // Our text fits, so center it vertically
+        offset = (height - totalHeight) / 2;
         wrapper.style['-webkit-transform'] = 'translateY(' + offset + 'px)';
+    } else {
+        // Our text is too tall, so scale the whole container down and center
+        // it horizontally.
+        scale = height / totalHeight;
+        offset = (width - (width * scale)) / 2;
+        wrapper.style['-webkit-transform'] = 'scale(' + scale + ',' + scale + ')';
+        wrapper.style['left'] = offset + 'px';
     }
-    // TODO: handle negative offsets (ie, scale the container down if the lines
-    // are too tall to fit)?
+
+    return totalHeight;
 }
 
-var el = document.querySelector('.text');
-layout(el, 200, 300, 0.4, 12);
+module.exports = {
+    'layout': layout
+};
