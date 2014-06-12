@@ -1,4 +1,11 @@
-function layout(el, width, height, targetLineLength) {
+function layout(el, targetLineLength, width, height) {
+    if (width === undefined) {
+        width = el.clientWidth;
+    }
+    if (height === undefined) {
+        height = el.clientHeight;
+    }
+
     // First, use Erik Loyer's slabtype algorithm to split our input text into
     // suitable lines. We depart from the original algorithm by requiring the
     // ideal line length to be given instead of automagically calculated.
