@@ -57,7 +57,7 @@ function layout(el, targetLineLength, width, height) {
         );
     }
     el.innerHTML = (
-        '<div class="slabtext" style="position:relative; -webkit-transform-origin: 0 0;">' +
+        '<div class="slabtext" style="position:relative; -webkit-transform-origin: 50% 0;">' +
         spans.join('\n') +
         '</div>'
     );
@@ -81,18 +81,15 @@ function layout(el, targetLineLength, width, height) {
     }
 
     var wrapper = el.querySelector('.slabtext');
-    var offset;
     if (totalHeight <= height) {
         // Our text fits, so center it vertically
-        offset = (height - totalHeight) / 2;
+        var offset = (height - totalHeight) / 2;
         wrapper.style['-webkit-transform'] = 'translateY(' + offset + 'px)';
     } else {
         // Our text is too tall, so scale the whole container down and center
         // it horizontally.
         scale = height / totalHeight;
-        offset = (width - (width * scale)) / 2;
         wrapper.style['-webkit-transform'] = 'scale(' + scale + ',' + scale + ')';
-        wrapper.style['left'] = offset + 'px';
     }
 
     return totalHeight;
