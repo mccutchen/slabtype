@@ -1,3 +1,11 @@
+var LINE_CSS = [
+    'position:absolute',
+    'top: 0',
+    'left: 0',
+    '-webkit-transform-origin: 0 0',
+    'white-space: nowrap'
+].join(';');
+
 function layout(el, targetLineLength, width, height) {
     if (width === undefined) {
         width = el.clientWidth;
@@ -51,7 +59,7 @@ function layout(el, targetLineLength, width, height) {
     for (var i = 0; i < lines.length; i++) {
         line = lines[i];
         spans.push(
-            '<span style="position:absolute; top: 0; left: 0; -webkit-transform-origin: 0 0; white-space: nowrap">' +
+            '<span style="' + LINE_CSS + '">' +
             line +
             '</span>'
         );
