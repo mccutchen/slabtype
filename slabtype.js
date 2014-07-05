@@ -1,10 +1,31 @@
+var CONTAINER_CSS = [
+    'position: relative',
+    '-webkit-transform-origin: 50% 0',
+    '-moz-transform-origin: 50% 0',
+    '-o-transform-origin: 50% 0',
+    '-ms-transform-origin: 50% 0',
+    'transform-origin: 50% 0'
+].join(';');
+
 var LINE_CSS = [
     'position:absolute',
     'top: 0',
     'left: 0',
+    'white-space: nowrap',
     '-webkit-transform-origin: 0 0',
-    'white-space: nowrap'
+    '-moz-transform-origin: 0 0',
+    '-o-transform-origin: 0 0',
+    '-ms-transform-origin: 0 0',
+    'transform-origin: 0 0'
 ].join(';');
+
+function setVendorStyle(el, rule, value) {
+    el.style['-webkit-' + rule] = value;
+    el.style['-moz-' + rule] = value;
+    el.style['-o-' + rule] = value;
+    el.style['-ms-' + rule] = value;
+    el.style[rule] = value;
+}
 
 function layout(el, targetLineLength, width, height) {
     if (width === undefined) {
@@ -19,7 +40,7 @@ function layout(el, targetLineLength, width, height) {
     // ideal line length to be given instead of automagically calculated.
     //
     // http://erikloyer.com/index.php/blog/the_slabtype_algorithm_part_1_background/
-    var text = el.innerText;
+    var text = el.innerText || el.textContent;
     var words = text.split(/\s+/);
 
     var lines = [];
@@ -67,7 +88,7 @@ function layout(el, targetLineLength, width, height) {
         );
     }
     el.innerHTML = (
-        '<div class="slabtext" style="position:relative; -webkit-transform-origin: 50% 0;">' +
+        '<div class="slabtext" style="' + CONTAINER_CSS + '">' +
         spans.join('\n') +
         '</div>'
     );
@@ -83,7 +104,7 @@ function layout(el, targetLineLength, width, height) {
         lineEl = lineEls[i];
         scale = width / lineEl.offsetWidth;
         if (scale !== 1) {
-            lineEl.style['-webkit-transform'] = 'scale(' + scale + ',' + scale + ')';
+            setVendorStyle(lineEl, 'transform', 'scale(' + scale + ',' + scale + ')');
             lineEl.style['top'] = totalHeight + 'px';
             rect = lineEl.getBoundingClientRect();
             totalHeight += rect.height;
@@ -95,12 +116,13 @@ function layout(el, targetLineLength, width, height) {
     if (totalHeight <= height) {
         // Our text fits, so center it vertically
         var offset = (height - totalHeight) / 2;
-        wrapper.style['-webkit-transform'] = 'translateY(' + offset + 'px)';
+        setVendorStyle(wrapper, 'transform', 'translateY(' + offset + 'px)');
     } else {
         // Our text is too tall, so scale the whole container down and center
         // it horizontally.
-        scale = height / totalHeight;
-        wrapper.style['-webkit-transform'] = 'scale(' + scale + ',' + scale + ')';
+        containerScale = height / totalHeight;
+        setVendorStyle(wrapper, 'transform',
+            'scale(' + containerScale + ',' + containerScale + ')');
     }
 
     return {
