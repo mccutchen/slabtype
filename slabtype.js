@@ -138,6 +138,93 @@ function layout(el, targetLineLength, width, height) {
     };
 }
 
+function parseFontSize(fontDecl) {
+    return /(\d+)pt/.exec(fontDecl)[1];
+}
+
+function layoutCanvas(el, targetLineLength, color, fontDecl, width, height) {
+    if (width === undefined) {
+        width = el.clientWidth;
+    }
+    if (height === undefined) {
+        height = el.clientHeight;
+    }
+
+    var fontSize = parseFontSize(fontDecl);
+    var text = el.innerText || el.textContent;
+    var lines = makeLines(text.toUpperCase(), targetLineLength);
+
+    var ctx = el.getContext('2d');
+    console.log('LAYOUT OUT CANVAS', width, height, ctx, el);
+
+    ctx.fillStyle = color;
+    ctx.font = fontDecl;
+    ctx.textBaseline = 'hanging';
+
+    // Add our lines to the DOM, where each line is wrapped in a <span> and all
+    // of the spans are wrapped in a <div>.
+    var line, lineWidth, lineScale;
+    var leading = height * 0.025;
+    var lineOffset = 0;
+    for (var i = 0; i < lines.length; i++) {
+        line = lines[i];
+        lineWidth = ctx.measureText(line).width;
+        lineScale = width / lineWidth;
+        // lineScale = 1;
+        console.log('line %o', line, lineWidth, lineScale, lineOffset, leading);
+
+        ctx.save();
+        ctx.translate(0, lineOffset);
+        ctx.scale(lineScale, lineScale);
+        ctx.fillText(line, 0, 0);
+        ctx.restore();
+
+        lineOffset += (fontSize * lineScale) + leading;
+    }
+
+    // // Lay out the lines optimally within the given bounds.
+    // var lineEls = el.querySelectorAll('span');
+    // var lineCount = lineEls.length;
+    // var lineEl;
+    // var scale;
+    // var rect;
+    // var totalHeight = 0;
+    // for (i = 0; i < lineCount; i++) {
+    //     lineEl = lineEls[i];
+    //     scale = width / lineEl.offsetWidth;
+    //     if (scale !== 1) {
+    //         setVendorStyle(lineEl, 'transform', 'scale(' + scale + ',' + scale + ')');
+    //         lineEl.style['top'] = totalHeight + 'px';
+    //         rect = lineEl.getBoundingClientRect();
+    //         totalHeight += rect.height;
+    //     }
+    // }
+
+    // var wrapper = el.querySelector('.slabtext');
+    // var containerScale = 1;
+    // if (totalHeight <= height) {
+    //     // Our text fits, so center it vertically
+    //     var offset = (height - totalHeight) / 2;
+    //     setVendorStyle(wrapper, 'transform', 'translateY(' + offset + 'px)');
+    // } else {
+    //     // Our text is too tall, so scale the whole container down and center
+    //     // it horizontally.
+    //     containerScale = height / totalHeight;
+    //     setVendorStyle(wrapper, 'transform',
+    //         'scale(' + containerScale + ',' + containerScale + ')');
+    // }
+
+    return {
+        //'slabHeight': totalHeight * containerScale,
+        'containerHeight': height,
+        'containerWidth': width
+        //'scale': containerScale
+    };
+}
+
 var Slabtype = {
-    'layout': layout
+    'layout': layout,
+    'layoutCanvas': layoutCanvas
 };
+
+Slabtype = Slabtype;

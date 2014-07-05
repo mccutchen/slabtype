@@ -14,6 +14,7 @@
             height: 300px;
             border: 1px solid red;
             overflow: hidden;
+            margin: 1em 0;
         }
         .text {
             height: 100%;
@@ -27,9 +28,14 @@
         <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
     </div>
 
+    <div class="container">
+        <canvas width="200" height="300">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</canvas>
+    </div>
+
     <script src="slabtype.js"></script>
     <script>
         Slabtype.layout(document.querySelector('.text'), 10);
+        Slabtype.layoutCanvas(document.querySelector('canvas'), 10, '#000', 'normal 900 12pt "Avenir Next"');
     </script>
 </body>
 </html>
