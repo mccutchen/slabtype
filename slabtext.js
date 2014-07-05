@@ -52,6 +52,8 @@ function layout(el, targetLineLength, width, height) {
         lines.push(lineText);
     }
 
+    console.log('slabtype lines:', lines);
+
     // Add our lines to the DOM, where each line is wrapped in a <span> and all
     // of the spans are wrapped in a <div>.
     var spans = [];
