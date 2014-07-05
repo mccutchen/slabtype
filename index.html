@@ -15,6 +15,10 @@
             border: 1px solid red;
             overflow: hidden;
         }
+        .text {
+            height: 100%;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -24,5 +28,8 @@
     </div>
 
     <script src="slabtype.js"></script>
+    <script>
+        Slabtype.layout(document.querySelector('.text'), 10);
+    </script>
 </body>
 </html>
