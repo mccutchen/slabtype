@@ -91,6 +91,7 @@ function layout(el, targetLineLength, width, height) {
     }
 
     var wrapper = el.querySelector('.slabtext');
+    var containerScale = 1;
     if (totalHeight <= height) {
         // Our text fits, so center it vertically
         var offset = (height - totalHeight) / 2;
@@ -102,7 +103,12 @@ function layout(el, targetLineLength, width, height) {
         wrapper.style['-webkit-transform'] = 'scale(' + scale + ',' + scale + ')';
     }
 
-    return totalHeight;
+    return {
+        'slabHeight': totalHeight * containerScale,
+        'containerHeight': height,
+        'containerWidth': width,
+        'scale': containerScale
+    };
 }
 
 module.exports = {
