@@ -27,20 +27,12 @@ function setVendorStyle(el, rule, value) {
     el.style[rule] = value;
 }
 
-function layout(el, targetLineLength, width, height) {
-    if (width === undefined) {
-        width = el.clientWidth;
-    }
-    if (height === undefined) {
-        height = el.clientHeight;
-    }
-
-    // First, use Erik Loyer's slabtype algorithm to split our input text into
+function makeLines(text, targetLineLength) {
+    // Use Erik Loyer's slabtype algorithm to split our input text into
     // suitable lines. We depart from the original algorithm by requiring the
     // ideal line length to be given instead of automagically calculated.
     //
     // http://erikloyer.com/index.php/blog/the_slabtype_algorithm_part_1_background/
-    var text = el.innerText || el.textContent;
     var words = text.split(/\s+/);
 
     var lines = [];
@@ -74,6 +66,19 @@ function layout(el, targetLineLength, width, height) {
     }
 
     console.log('slabtype lines:', lines);
+    return lines;
+}
+
+function layout(el, targetLineLength, width, height) {
+    if (width === undefined) {
+        width = el.clientWidth;
+    }
+    if (height === undefined) {
+        height = el.clientHeight;
+    }
+
+    var text = el.innerText || el.textContent;
+    var lines = makeLines(text, targetLineLength);
 
     // Add our lines to the DOM, where each line is wrapped in a <span> and all
     // of the spans are wrapped in a <div>.
@@ -133,6 +138,6 @@ function layout(el, targetLineLength, width, height) {
     };
 }
 
-module.exports = {
+var Slabtype = {
     'layout': layout
 };
