@@ -6,38 +6,80 @@
         body {
             font-family: "Avenir Next";
             font-weight: 900;
-            text-transform: uppercase;
-            line-height: 1;
             font-size: 2em;
+            margin: 0;
+            padding: 0;
+            background-color: #eee;
+        }
+        section {
+            float: left;
+            margin: 1em;
+        }
+        h1 {
+            clear: both;
+            font-size: 1em;
+            margin: 1em 0 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container, canvas {
+            width: 300px;
+            height: 500px;
         }
         .container {
-            width: 400px;
-            height: 600px;
-            border: 1px solid red;
+            text-transform: uppercase;
+            line-height: 1;
             overflow: hidden;
-            margin: 1em;
-            float: left;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+            background-color: #fff;
         }
         .text {
             height: 100%;
             width: 100%;
         }
+        .dom .container {
+            color: #900;
+        }
+        .canvas .container {
+            color: #009;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
-    </div>
+    <section class="dom">
+        <h1>DOM Layout</h1>
 
-    <div class="container">
-        <canvas width="400" height="600">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</canvas>
-    </div>
+        <div class="container">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+        </div>
+
+        <div class="container">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too big.</div>
+        </div>
+    </section>
+
+    <section class="canvas">
+        <h1>Canvas Layout</h1>
+
+        <div class="container">
+            <canvas width="300" height="500">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</canvas>
+        </div>
+
+        <div class="container">
+            <canvas width="300" height="500">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too big.</canvas>
+        </div>
+    </section>
 
     <script src="slabtype.js"></script>
     <script>
-        Slabtype.layout(document.querySelector('.text'), 10);
-        Slabtype.layoutCanvas(document.querySelector('canvas'), 10);
+        Array.prototype.slice.call(document.querySelectorAll('.text')).forEach(function(el) {
+            Slabtype.layout(el, 10);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('canvas')).forEach(function(el) {
+            Slabtype.layoutCanvas(el, 10);
+        });
     </script>
 </body>
 </html>
