@@ -174,23 +174,22 @@ function layoutCanvas(el, targetLineLength, width, height) {
     // them to the canvas. On the first pass, we pre-calculate each line's size
     // and scaling factors and accumulate a total height for all of the lines.
     var line, lineWidth, lineScale;
-    var lineSpecs = [];
+    var scales = [];
     var slabHeight = 0;
     for (var i = 0; i < lines.length; i++) {
         line = lines[i];
         lineWidth = ctx.measureText(line).width;
         lineScale = width / lineWidth;
-        lineSpecs.push({
-            'text': line,
-            'scale': lineScale
-        });
+        scales.push(lineScale);
         slabHeight += fontSize * lineScale;
     }
 
     // Then we use the pre-calculated height of the whole slab to figure out
     // whether we need to center it vertically or scale the whole thing down to
     // fit inside the container.
-    ctx.save();
+    //
+    // We translate/scale the context here without restoring, because this gets
+    // the canvas into the right position for the actual rendering pass.
     var slabScale = 1;
     if (slabHeight <= height) {
         var offset = (height - slabHeight) / 2;
@@ -202,18 +201,22 @@ function layoutCanvas(el, targetLineLength, width, height) {
 
     // And finally we can make our second pass through the lines to draw them
     // to the canvas.
-    var lineSpec;
-    var lineOffset = 0;
-    for (i = 0; i < lineSpecs.length; i++) {
-        lineSpec = lineSpecs[i];
+    var lineOffset;
+    for (i = 0; i < lines.length; i++) {
+        line = lines[i];
+        lineScale = scales[i];
+        console.log('Rendering line:', line, lineScale, lineOffset);
+
         ctx.save();
-        ctx.translate(0, lineOffset);
-        ctx.scale(lineSpec['scale'], lineSpec['scale']);
-        ctx.fillText(lineSpec['text'], 0, 0);
+        ctx.scale(lineScale, lineScale);
+        ctx.fillText(line, 0, 0);
         ctx.restore();
-        lineOffset += fontSize * lineScale;
+
+        // translate the context so that it's ready for the next line to be
+        // drawn.
+        lineOffset = fontSize * lineScale * slabScale;
+        ctx.translate(0, lineOffset);
     }
-    ctx.restore();
 
     return {
         'slabHeight': slabHeight * slabScale,
