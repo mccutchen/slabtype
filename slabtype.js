@@ -192,11 +192,13 @@ function layoutCanvas(el, targetLineLength, width, height) {
     // the canvas into the right position for the actual rendering pass.
     var slabScale = 1;
     if (slabHeight <= height) {
-        var offset = (height - slabHeight) / 2;
-        ctx.translate(0, offset);
+        var offsetY = (height - slabHeight) / 2;
+        ctx.translate(0, offsetY);
     } else {
         slabScale = height / slabHeight;
+        var offsetX = (width - (width * slabScale)) / (2 * slabScale);
         ctx.scale(slabScale, slabScale);
+        ctx.translate(offsetX, 0);
     }
 
     // And finally we can make our second pass through the lines to draw them
@@ -214,7 +216,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
 
         // translate the context so that it's ready for the next line to be
         // drawn.
-        lineOffset = fontSize * lineScale * slabScale;
+        lineOffset = fontSize * lineScale;
         ctx.translate(0, lineOffset);
     }
 
