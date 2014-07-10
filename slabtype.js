@@ -138,11 +138,20 @@ function layout(el, targetLineLength, width, height) {
     };
 }
 
-function parseFontSize(fontDecl) {
-    return /(\d+)pt/.exec(fontDecl)[1];
+function parseFontSize(computedStyle) {
+    return parseInt(/(\d+)px/.exec(computedStyle['font-size'])[1], 10);
 }
 
-function layoutCanvas(el, targetLineLength, color, fontDecl, width, height) {
+function getCanvasFont(computedStyle) {
+    return [
+        computedStyle['font-style'],
+        computedStyle['font-weight'],
+        computedStyle['font-size'],
+        computedStyle['font-family']
+    ].join(' ');
+}
+
+function layoutCanvas(el, targetLineLength, width, height) {
     if (width === undefined) {
         width = el.clientWidth;
     }
@@ -150,28 +159,27 @@ function layoutCanvas(el, targetLineLength, color, fontDecl, width, height) {
         height = el.clientHeight;
     }
 
-    var fontSize = parseFontSize(fontDecl);
     var text = el.innerText || el.textContent;
     var lines = makeLines(text.toUpperCase(), targetLineLength);
 
+    var computedStyle = window.getComputedStyle(el, null);
+    var fontSize = parseFontSize(computedStyle);
     var ctx = el.getContext('2d');
-    console.log('LAYOUT OUT CANVAS', width, height, ctx, el);
 
-    ctx.fillStyle = color;
-    ctx.font = fontDecl;
+    ctx.font = getCanvasFont(computedStyle);
+    ctx.fillStyle = computedStyle['color'];
     ctx.textBaseline = 'hanging';
 
     // Add our lines to the DOM, where each line is wrapped in a <span> and all
     // of the spans are wrapped in a <div>.
     var line, lineWidth, lineScale;
-    var leading = height * 0.025;
     var lineOffset = 0;
     for (var i = 0; i < lines.length; i++) {
         line = lines[i];
         lineWidth = ctx.measureText(line).width;
         lineScale = width / lineWidth;
         // lineScale = 1;
-        console.log('line %o', line, lineWidth, lineScale, lineOffset, leading);
+        console.log('line %o', line, lineWidth, lineScale, lineOffset);
 
         ctx.save();
         ctx.translate(0, lineOffset);
@@ -179,7 +187,7 @@ function layoutCanvas(el, targetLineLength, color, fontDecl, width, height) {
         ctx.fillText(line, 0, 0);
         ctx.restore();
 
-        lineOffset += (fontSize * lineScale) + leading;
+        lineOffset += fontSize * lineScale;
     }
 
     // // Lay out the lines optimally within the given bounds.
