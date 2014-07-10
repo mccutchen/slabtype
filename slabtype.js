@@ -170,63 +170,56 @@ function layoutCanvas(el, targetLineLength, width, height) {
     ctx.fillStyle = computedStyle['color'];
     ctx.textBaseline = 'hanging';
 
-    // Add our lines to the DOM, where each line is wrapped in a <span> and all
-    // of the spans are wrapped in a <div>.
+    // It takes two passes through the array of lines to figure out how to draw
+    // them to the canvas. On the first pass, we pre-calculate each line's size
+    // and scaling factors and accumulate a total height for all of the lines.
     var line, lineWidth, lineScale;
-    var lineOffset = 0;
+    var lineSpecs = [];
+    var slabHeight = 0;
     for (var i = 0; i < lines.length; i++) {
         line = lines[i];
         lineWidth = ctx.measureText(line).width;
         lineScale = width / lineWidth;
-        // lineScale = 1;
-        console.log('line %o', line, lineWidth, lineScale, lineOffset);
-
-        ctx.save();
-        ctx.translate(0, lineOffset);
-        ctx.scale(lineScale, lineScale);
-        ctx.fillText(line, 0, 0);
-        ctx.restore();
-
-        lineOffset += fontSize * lineScale;
+        lineSpecs.push({
+            'text': line,
+            'scale': lineScale
+        });
+        slabHeight += fontSize * lineScale;
     }
 
-    // // Lay out the lines optimally within the given bounds.
-    // var lineEls = el.querySelectorAll('span');
-    // var lineCount = lineEls.length;
-    // var lineEl;
-    // var scale;
-    // var rect;
-    // var totalHeight = 0;
-    // for (i = 0; i < lineCount; i++) {
-    //     lineEl = lineEls[i];
-    //     scale = width / lineEl.offsetWidth;
-    //     if (scale !== 1) {
-    //         setVendorStyle(lineEl, 'transform', 'scale(' + scale + ',' + scale + ')');
-    //         lineEl.style['top'] = totalHeight + 'px';
-    //         rect = lineEl.getBoundingClientRect();
-    //         totalHeight += rect.height;
-    //     }
-    // }
+    // Then we use the pre-calculated height of the whole slab to figure out
+    // whether we need to center it vertically or scale the whole thing down to
+    // fit inside the container.
+    ctx.save();
+    var slabScale = 1;
+    if (slabHeight <= height) {
+        var offset = (height - slabHeight) / 2;
+        ctx.translate(0, offset);
+    } else {
+        slabScale = height / slabHeight;
+        ctx.scale(slabScale, slabScale);
+    }
 
-    // var wrapper = el.querySelector('.slabtext');
-    // var containerScale = 1;
-    // if (totalHeight <= height) {
-    //     // Our text fits, so center it vertically
-    //     var offset = (height - totalHeight) / 2;
-    //     setVendorStyle(wrapper, 'transform', 'translateY(' + offset + 'px)');
-    // } else {
-    //     // Our text is too tall, so scale the whole container down and center
-    //     // it horizontally.
-    //     containerScale = height / totalHeight;
-    //     setVendorStyle(wrapper, 'transform',
-    //         'scale(' + containerScale + ',' + containerScale + ')');
-    // }
+    // And finally we can make our second pass through the lines to draw them
+    // to the canvas.
+    var lineSpec;
+    var lineOffset = 0;
+    for (i = 0; i < lineSpecs.length; i++) {
+        lineSpec = lineSpecs[i];
+        ctx.save();
+        ctx.translate(0, lineOffset);
+        ctx.scale(lineSpec['scale'], lineSpec['scale']);
+        ctx.fillText(lineSpec['text'], 0, 0);
+        ctx.restore();
+        lineOffset += fontSize * lineScale;
+    }
+    ctx.restore();
 
     return {
-        //'slabHeight': totalHeight * containerScale,
+        'slabHeight': slabHeight * slabScale,
         'containerHeight': height,
-        'containerWidth': width
-        //'scale': containerScale
+        'containerWidth': width,
+        'scale': slabScale
     };
 }
 
