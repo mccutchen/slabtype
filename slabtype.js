@@ -151,6 +151,26 @@ function getCanvasFont(computedStyle) {
     ].join(' ');
 }
 
+function prepareContextShadow(ctx, computedStyle) {
+    var matches = /^(.+?) (\d+)px (\d+)px (\d+)px$/.exec(computedStyle['text-shadow']);
+    if (!matches) {
+        return ctx;
+    }
+    ctx.shadowColor = matches[1];
+    ctx.shadowOffsetX = parseInt(matches[2], 10);
+    ctx.shadowOffsetY = parseInt(matches[3], 10);
+    ctx.shadowBlur = parseInt(matches[4], 10);
+    return ctx;
+}
+
+function prepareContext(canvasEl, computedStyle) {
+    var ctx = canvasEl.getContext('2d');
+    ctx.font = getCanvasFont(computedStyle);
+    ctx.fillStyle = computedStyle['color'];
+    ctx.textBaseline = 'hanging';
+    return prepareContextShadow(ctx, computedStyle);
+}
+
 function layoutCanvas(el, targetLineLength, width, height) {
     if (width === undefined) {
         width = el.clientWidth;
@@ -164,11 +184,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
 
     var computedStyle = window.getComputedStyle(el, null);
     var fontSize = parseFontSize(computedStyle);
-    var ctx = el.getContext('2d');
-
-    ctx.font = getCanvasFont(computedStyle);
-    ctx.fillStyle = computedStyle['color'];
-    ctx.textBaseline = 'hanging';
+    var ctx = prepareContext(el, computedStyle);
 
     // It takes two passes through the array of lines to figure out how to draw
     // them to the canvas. On the first pass, we pre-calculate each line's size
@@ -207,7 +223,6 @@ function layoutCanvas(el, targetLineLength, width, height) {
     for (i = 0; i < lines.length; i++) {
         line = lines[i];
         lineScale = scales[i];
-        console.log('Rendering line:', line, lineScale, lineOffset);
 
         ctx.save();
         ctx.scale(lineScale, lineScale);
