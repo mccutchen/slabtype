@@ -167,6 +167,7 @@ function prepareContext(canvasEl, computedStyle) {
     var ctx = canvasEl.getContext('2d');
     ctx.font = getCanvasFont(computedStyle);
     ctx.fillStyle = computedStyle['color'];
+    ctx.testAlign = 'center';
     ctx.textBaseline = 'hanging';
     return prepareContextShadow(ctx, computedStyle);
 }
@@ -183,19 +184,26 @@ function layoutCanvas(el, targetLineLength, width, height) {
     var lines = makeLines(text.toUpperCase(), targetLineLength);
 
     var computedStyle = window.getComputedStyle(el, null);
-    var fontSize = parseFontSize(computedStyle);
     var ctx = prepareContext(el, computedStyle);
+
+    var fontSize = parseFontSize(computedStyle);
+    var shadowBlur = ctx.shadowBlur;
+    var paddingLeft = shadowBlur - ctx.shadowOffsetX;
+    var paddingRight = shadowBlur + ctx.shadowOffsetX;
+    var paddingTop = shadowBlur - ctx.shadowOffsetY;
+    var paddingBottom = shadowBlur + ctx.shadowOffsetY;
+    var availableWidth = width - paddingLeft - paddingRight;
 
     // It takes two passes through the array of lines to figure out how to draw
     // them to the canvas. On the first pass, we pre-calculate each line's size
     // and scaling factors and accumulate a total height for all of the lines.
     var line, lineWidth, lineScale;
     var scales = [];
-    var slabHeight = 0;
+    var slabHeight = paddingTop + paddingBottom;
     for (var i = 0; i < lines.length; i++) {
         line = lines[i];
         lineWidth = ctx.measureText(line).width;
-        lineScale = width / lineWidth;
+        lineScale = availableWidth / lineWidth;
         scales.push(lineScale);
         slabHeight += fontSize * lineScale;
     }
@@ -209,12 +217,12 @@ function layoutCanvas(el, targetLineLength, width, height) {
     var slabScale = 1;
     if (slabHeight <= height) {
         var offsetY = (height - slabHeight) / 2;
-        ctx.translate(0, offsetY);
+        ctx.translate(paddingLeft, offsetY);
     } else {
         slabScale = height / slabHeight;
         var offsetX = (width - (width * slabScale)) / (2 * slabScale);
         ctx.scale(slabScale, slabScale);
-        ctx.translate(offsetX, 0);
+        ctx.translate(offsetX + paddingLeft, paddingTop);
     }
 
     // And finally we can make our second pass through the lines to draw them
