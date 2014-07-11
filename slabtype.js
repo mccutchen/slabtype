@@ -180,13 +180,25 @@ function layoutCanvas(el, targetLineLength, width, height) {
         height = el.clientHeight;
     }
 
+    // What text are we laying out?
     var text = el.innerText || el.textContent;
-    var lines = makeLines(text.toUpperCase(), targetLineLength);
 
+    // We'll replace the input el with a canvas.
+    var canvasEl = document.createElement('canvas');
+    canvasEl.width = width;
+    canvasEl.height = height;
+
+    // Get everything we need from the computed style of the input element
+    // BEFORE we replace it with our canvas, otherwise the computed styles will
+    // change.
     var computedStyle = window.getComputedStyle(el, null);
-    var ctx = prepareContext(el, computedStyle);
-
+    var ctx = prepareContext(canvasEl, computedStyle);
     var fontSize = parseFontSize(computedStyle);
+
+    el.parentNode.replaceChild(canvasEl, el);
+    el = null;
+
+    // Figure any padding we need based on the text shadow settings of our ctx.
     var shadowBlur = ctx.shadowBlur;
     var paddingLeft = shadowBlur - ctx.shadowOffsetX;
     var paddingRight = shadowBlur + ctx.shadowOffsetX;
@@ -197,6 +209,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
     // It takes two passes through the array of lines to figure out how to draw
     // them to the canvas. On the first pass, we pre-calculate each line's size
     // and scaling factors and accumulate a total height for all of the lines.
+    var lines = makeLines(text.toUpperCase(), targetLineLength);
     var line, lineWidth, lineScale;
     var scales = [];
     var slabHeight = paddingTop + paddingBottom;
