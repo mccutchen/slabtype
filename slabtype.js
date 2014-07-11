@@ -139,20 +139,22 @@ function layout(el, targetLineLength, width, height) {
 }
 
 function parseFontSize(computedStyle) {
-    return parseInt(/(\d+)px/.exec(computedStyle['font-size'])[1], 10);
+    var fontSize = computedStyle.getPropertyValue('font-size');
+    return parseInt(/(\d+)px/.exec(fontSize)[1], 10);
 }
 
 function getCanvasFont(computedStyle) {
     return [
-        computedStyle['font-style'],
-        computedStyle['font-weight'],
-        computedStyle['font-size'],
-        computedStyle['font-family']
+        computedStyle.getPropertyValue('font-style'),
+        computedStyle.getPropertyValue('font-weight'),
+        computedStyle.getPropertyValue('font-size'),
+        computedStyle.getPropertyValue('font-family')
     ].join(' ');
 }
 
 function prepareContextShadow(ctx, computedStyle) {
-    var matches = /^(.+?) (-?\d+)px (-?\d+)px (\d+)px$/.exec(computedStyle['text-shadow']);
+    var textShadow = computedStyle.getPropertyValue('text-shadow');
+    var matches = /^(.+?) (-?\d+)px (-?\d+)px (\d+)px$/.exec(textShadow);
     if (!matches) {
         return ctx;
     }
@@ -166,7 +168,7 @@ function prepareContextShadow(ctx, computedStyle) {
 function prepareContext(canvasEl, computedStyle) {
     var ctx = canvasEl.getContext('2d');
     ctx.font = getCanvasFont(computedStyle);
-    ctx.fillStyle = computedStyle['color'];
+    ctx.fillStyle = computedStyle.getPropertyValue('color');
     ctx.testAlign = 'center';
     ctx.textBaseline = 'hanging';
     return prepareContextShadow(ctx, computedStyle);
