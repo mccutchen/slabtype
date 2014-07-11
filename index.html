@@ -22,27 +22,32 @@
             padding: 0;
             text-align: center;
         }
-        .container, canvas {
+        .container {
             width: 300px;
             height: 500px;
-        }
-        .container {
             text-transform: uppercase;
             line-height: 1;
             overflow: hidden;
             margin-bottom: 1em;
             border: 1px solid #ccc;
             background-color: #fff;
+            color: #000;
         }
         .text {
             height: 100%;
             width: 100%;
         }
-        .dom .container {
-            color: #900;
+        .b {
+            color: #fff;
+            text-shadow: 0 0 5px #000;
         }
-        .canvas .container {
-            color: #009;
+        .c {
+            color: #fff;
+            text-shadow: 10px 10px 20px #000;
+        }
+        .d {
+            color: #fff;
+            text-shadow: -10px -10px 20px #000;
         }
     </style>
 </head>
@@ -51,33 +56,84 @@
     <section class="dom">
         <h1>DOM Layout</h1>
 
-        <div class="container">
+        <div class="container a">
             <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
         </div>
 
-        <div class="container">
-            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too big.</div>
+        <div class="container a">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+        </div>
+
+        <div class="container b">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+        </div>
+
+        <div class="container b">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+        </div>
+
+        <div class="container c">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+        </div>
+
+        <div class="container c">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+        </div>
+
+        <div class="container d">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+        </div>
+
+        <div class="container d">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
         </div>
     </section>
 
     <section class="canvas">
         <h1>Canvas Layout</h1>
 
-        <div class="container">
-            <canvas width="300" height="500">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</canvas>
+        <div class="container a">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
         </div>
 
-        <div class="container">
-            <canvas width="300" height="500">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too big.</canvas>
+        <div class="container a">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+        </div>
+
+        <div class="container b">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+        </div>
+
+        <div class="container b">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+        </div>
+
+        <div class="container c">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+        </div>
+
+        <div class="container c">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+        </div>
+
+        <div class="container d">
+            <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+        </div>
+
+        <div class="container d">
+            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
         </div>
     </section>
 
     <script src="slabtype.js"></script>
     <script>
-        Array.prototype.slice.call(document.querySelectorAll('.text')).forEach(function(el) {
+        var domEls = document.querySelector('section.dom').querySelectorAll('.text');
+        var canvasEls = document.querySelector('section.canvas').querySelectorAll('.text');
+
+        Array.prototype.slice.call(domEls).forEach(function(el) {
             Slabtype.layout(el, 10);
         });
-        Array.prototype.slice.call(document.querySelectorAll('canvas')).forEach(function(el) {
+        Array.prototype.slice.call(canvasEls).forEach(function(el) {
             Slabtype.layoutCanvas(el, 10);
         });
     </script>
