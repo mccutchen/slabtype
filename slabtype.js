@@ -152,7 +152,7 @@ function getCanvasFont(computedStyle) {
 }
 
 function prepareContextShadow(ctx, computedStyle) {
-    var matches = /^(.+?) (\d+)px (\d+)px (\d+)px$/.exec(computedStyle['text-shadow']);
+    var matches = /^(.+?) (-?\d+)px (-?\d+)px (\d+)px$/.exec(computedStyle['text-shadow']);
     if (!matches) {
         return ctx;
     }
