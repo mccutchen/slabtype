@@ -64,8 +64,6 @@ function makeLines(text, targetLineLength) {
         }
         lines.push(lineText);
     }
-
-    console.log('slabtype lines:', lines);
     return lines;
 }
 
@@ -170,7 +168,7 @@ function prepareContext(canvasEl, computedStyle) {
     ctx.font = getCanvasFont(computedStyle);
     ctx.fillStyle = computedStyle.getPropertyValue('color');
     ctx.testAlign = 'center';
-    ctx.textBaseline = 'hanging';
+    ctx.textBaseline = 'middle';
     return prepareContextShadow(ctx, computedStyle);
 }
 
@@ -243,13 +241,14 @@ function layoutCanvas(el, targetLineLength, width, height) {
     // And finally we can make our second pass through the lines to draw them
     // to the canvas.
     var lineOffset;
+    var fontOffset = fontSize / 2;
     for (i = 0; i < lines.length; i++) {
         line = lines[i];
         lineScale = scales[i];
 
         ctx.save();
         ctx.scale(lineScale, lineScale);
-        ctx.fillText(line, 0, 0);
+        ctx.fillText(line, 0, fontOffset);
         ctx.restore();
 
         // translate the context so that it's ready for the next line to be
