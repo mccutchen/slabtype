@@ -162,6 +162,23 @@ function prepareContextShadow(ctx, computedStyle) {
     return ctx;
 }
 
+function prepareCanvas(canvasEl, width, height) {
+    // Need to account for HiDPI (ie, Retina) displays:
+    // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+    var ctx = canvasEl.getContext('2d');
+    var devicePixelRatio = window.devicePixelRatio || 1;
+    var backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                            ctx.mozBackingStorePixelRatio ||
+                            ctx.msBackingStorePixelRatio ||
+                            ctx.oBackingStorePixelRatio ||
+                            ctx.backingStorePixelRatio || 1;
+    var ratio = devicePixelRatio / backingStoreRatio;
+    canvasEl.width = width * ratio;
+    canvasEl.height = height * ratio;
+    ctx.scale(ratio, ratio);
+    return canvasEl;
+}
+
 function prepareContext(canvasEl, computedStyle) {
     var ctx = canvasEl.getContext('2d');
     ctx.font = getCanvasFont(computedStyle);
@@ -184,8 +201,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
 
     // If the input element's not a canvas, we'll replace it with one.
     var canvasEl = el.nodeName.toLowerCase() === 'canvas' ? el : document.createElement('canvas');
-    canvasEl.width = width;
-    canvasEl.height = height;
+    prepareCanvas(canvasEl, width, height);
 
     // Get everything we need from the computed style of the input element
     // BEFORE we replace it with our canvas, otherwise the computed styles will
