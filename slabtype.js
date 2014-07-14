@@ -183,8 +183,8 @@ function layoutCanvas(el, targetLineLength, width, height) {
     // What text are we laying out?
     var text = el.innerText || el.textContent;
 
-    // We'll replace the input el with a canvas.
-    var canvasEl = document.createElement('canvas');
+    // If the input element's not a canvas, we'll replace it with one.
+    var canvasEl = el.nodeName.toLowerCase() === 'canvas' ? el : document.createElement('canvas');
     canvasEl.width = width;
     canvasEl.height = height;
 
@@ -195,8 +195,10 @@ function layoutCanvas(el, targetLineLength, width, height) {
     var ctx = prepareContext(canvasEl, computedStyle);
     var fontSize = parseFontSize(computedStyle);
 
-    el.parentNode.replaceChild(canvasEl, el);
-    el = null;
+    if (canvasEl !== el) {
+        el.parentNode.replaceChild(canvasEl, el);
+        el = null;
+    }
 
     // Figure any padding we need based on the text shadow settings of our ctx.
     var shadowBlur = ctx.shadowBlur;
