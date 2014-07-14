@@ -136,9 +136,8 @@ function layout(el, targetLineLength, width, height) {
     };
 }
 
-function parseFontSize(computedStyle) {
-    var fontSize = computedStyle.getPropertyValue('font-size');
-    return parseInt(/(\d+)px/.exec(fontSize)[1], 10);
+function getLineHeight(computedStyle) {
+    return parseFloat(computedStyle.getPropertyValue('line-height'));
 }
 
 function getCanvasFont(computedStyle) {
@@ -193,7 +192,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
     // change.
     var computedStyle = window.getComputedStyle(el, null);
     var ctx = prepareContext(canvasEl, computedStyle);
-    var fontSize = parseFontSize(computedStyle);
+    var lineHeight = getLineHeight(computedStyle);
 
     if (canvasEl !== el) {
         el.parentNode.replaceChild(canvasEl, el);
@@ -220,7 +219,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
         lineWidth = ctx.measureText(line).width;
         lineScale = availableWidth / lineWidth;
         scales.push(lineScale);
-        slabHeight += fontSize * lineScale;
+        slabHeight += lineHeight * lineScale;
     }
 
     // Then we use the pre-calculated height of the whole slab to figure out
@@ -243,7 +242,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
     // And finally we can make our second pass through the lines to draw them
     // to the canvas.
     var lineOffset;
-    var fontOffset = fontSize / 2;
+    var fontOffset = lineHeight / 2;
     for (i = 0; i < lines.length; i++) {
         line = lines[i];
         lineScale = scales[i];
@@ -255,7 +254,7 @@ function layoutCanvas(el, targetLineLength, width, height) {
 
         // translate the context so that it's ready for the next line to be
         // drawn.
-        lineOffset = fontSize * lineScale;
+        lineOffset = lineHeight * lineScale;
         ctx.translate(0, lineOffset);
     }
 
