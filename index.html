@@ -4,6 +4,9 @@
     <title></title>
     <meta charset="utf8">
     <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: "Avenir Next";
             font-weight: 900;
@@ -34,7 +37,7 @@
             background-color: #fff;
             color: #000;
         }
-        .text {
+        .text, canvas {
             height: 100%;
             width: 100%;
         }
@@ -94,7 +97,7 @@
         <h1>Canvas Layout</h1>
 
         <div class="container a">
-            <div class="text">A Päpa John's Mega Chocolate Chip Çookie in the hand is worth two in the bush.</div>
+            <canvas class="text">A Päpa John's Mega Chocolate Chip Çookie in the hand is worth two in the bush.</canvas>
         </div>
 
         <div class="container a">
@@ -106,7 +109,7 @@
         </div>
 
         <div class="container b">
-            <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+            <canvas class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</canvas>
         </div>
 
         <div class="container c">
