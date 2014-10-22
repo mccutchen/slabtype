@@ -1,4 +1,5 @@
-(function(globals) {
+var utils = require('./utils');
+
 
 function makeLines(text, targetLineLength) {
     // Use Erik Loyer's slabtype algorithm to split our input text into
@@ -40,58 +41,6 @@ function makeLines(text, targetLineLength) {
     return lines;
 }
 
-function getLineHeight(computedStyle) {
-    return parseFloat(computedStyle.getPropertyValue('line-height'));
-}
-
-function getCanvasFont(computedStyle) {
-    return [
-        computedStyle.getPropertyValue('font-style'),
-        computedStyle.getPropertyValue('font-weight'),
-        computedStyle.getPropertyValue('font-size'),
-        computedStyle.getPropertyValue('font-family')
-    ].join(' ');
-}
-
-function prepareContextShadow(ctx, computedStyle) {
-    var textShadow = computedStyle.getPropertyValue('text-shadow');
-    var matches = /^(.+?) (-?\d+)px (-?\d+)px (\d+)px$/.exec(textShadow);
-    if (!matches) {
-        return ctx;
-    }
-    ctx.shadowColor = matches[1];
-    ctx.shadowOffsetX = parseInt(matches[2], 10);
-    ctx.shadowOffsetY = parseInt(matches[3], 10);
-    ctx.shadowBlur = parseInt(matches[4], 10);
-    return ctx;
-}
-
-function prepareCanvas(canvasEl, width, height) {
-    // Need to account for HiDPI (ie, Retina) displays:
-    // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-    var ctx = canvasEl.getContext('2d');
-    var devicePixelRatio = window.devicePixelRatio || 1;
-    var backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
-                            ctx.mozBackingStorePixelRatio ||
-                            ctx.msBackingStorePixelRatio ||
-                            ctx.oBackingStorePixelRatio ||
-                            ctx.backingStorePixelRatio || 1;
-    var ratio = devicePixelRatio / backingStoreRatio;
-    canvasEl.width = width * ratio;
-    canvasEl.height = height * ratio;
-    ctx.scale(ratio, ratio);
-    return canvasEl;
-}
-
-function prepareContext(canvasEl, computedStyle) {
-    var ctx = canvasEl.getContext('2d');
-    ctx.font = getCanvasFont(computedStyle);
-    ctx.fillStyle = computedStyle.getPropertyValue('color');
-    ctx.testAlign = 'center';
-    ctx.textBaseline = 'middle';
-    return prepareContextShadow(ctx, computedStyle);
-}
-
 function layout(el, targetLineLength, width, height) {
     if (width === undefined) {
         width = el.clientWidth;
@@ -104,15 +53,14 @@ function layout(el, targetLineLength, width, height) {
     var text = el.innerText || el.textContent;
 
     // If the input element's not a canvas, we'll replace it with one.
-    var canvasEl = el.nodeName.toLowerCase() === 'canvas' ? el : document.createElement('canvas');
-    prepareCanvas(canvasEl, width, height);
+    var canvasEl = utils.prepareCanvas(el, width, height);
 
     // Get everything we need from the computed style of the input element
     // BEFORE we replace it with our canvas, otherwise the computed styles will
     // change.
     var computedStyle = window.getComputedStyle(el, null);
-    var ctx = prepareContext(canvasEl, computedStyle);
-    var lineHeight = getLineHeight(computedStyle);
+    var ctx = utils.prepareContext(canvasEl, computedStyle);
+    var lineHeight = utils.getLineHeight(computedStyle);
 
     if (canvasEl !== el) {
         canvasEl.style['height'] = height + 'px';
@@ -188,8 +136,6 @@ function layout(el, targetLineLength, width, height) {
     };
 }
 
-globals['Slabtype'] = {
+module.exports = {
     'layout': layout
 };
-
-})(window);

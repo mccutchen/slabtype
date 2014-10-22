@@ -1,0 +1,5 @@
+.gitignore
+.jshintrc
+index.html
+Makefile
+README.md
