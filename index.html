@@ -2,34 +2,109 @@
 <html>
 <head>
     <title></title>
+    <meta charset="utf8">
     <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
         body {
-            font-family: AvenirNext-Heavy;
-            font-size: 20px;
-            text-transform: uppercase;
-            line-height: 1;
+            font-family: "Avenir Next";
+            font-weight: 900;
+            font-size: 16px;
+            margin: 0;
+            padding: 2em;
+            background-color: #eee;
+        }
+        h1 {
+            clear: both;
+            font-size: 1em;
+            margin: 1em 0;
+            padding: 0;
+            text-align: center;
         }
         .container {
-            width: 200px;
-            height: 300px;
-            border: 1px solid red;
+            width: 300px;
+            height: 500px;
+            float: left;
+            margin: 0 1em 1em 0;
+            text-transform: uppercase;
+            line-height: 1;
             overflow: hidden;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #000;
         }
-        .text {
+        .text, canvas {
             height: 100%;
             width: 100%;
+        }
+        .b {
+            color: #fff;
+            text-shadow: 0 0 5px #000;
+        }
+        .c {
+            color: #fff;
+            text-shadow: 10px 10px 20px #000;
+        }
+        .d {
+            color: #fff;
+            text-shadow: -10px -10px 20px #000;
+        }
+        .e {
+            line-height: 0.7;
         }
     </style>
 </head>
 <body>
+    <h1>Layout Test</h1>
 
-    <div class="container">
+    <div class="container a">
+        <canvas class="text">A Päpa John's Mega Chocolate Chip Çookie in the hand is worth two in the bush.</canvas>
+    </div>
+
+    <div class="container a">
+        <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+    </div>
+
+    <div class="container b">
         <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+    </div>
+
+    <div class="container b">
+        <canvas class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</canvas>
+    </div>
+
+    <div class="container c">
+        <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+    </div>
+
+    <div class="container c">
+        <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+    </div>
+
+    <div class="container d">
+        <div class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</div>
+    </div>
+
+    <div class="container d">
+        <div class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</div>
+    </div>
+
+    <div class="container e">
+        <canvas class="text">A Papa John's Mega Chocolate Chip Cookie in the hand is worth two in the bush.</canvas>
+    </div>
+
+    <div class="container e">
+        <canvas class="text">This claim contains exactly 100 characters & no more, which is probably too many characters for us. Plus maybe a few more, just to make sure it's too darn big.</canvas>
     </div>
 
     <script src="slabtype.js"></script>
     <script>
-        Slabtype.layout(document.querySelector('.text'), 10);
+        var canvasEls = document.querySelectorAll('.text');
+        Array.prototype.slice.call(canvasEls).forEach(function(el) {
+            Slabtype.layout(el, 10);
+        });
     </script>
 </body>
 </html>
