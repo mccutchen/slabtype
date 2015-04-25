@@ -1,5 +1,18 @@
 function getLineHeight(computedStyle) {
-    return parseFloat(computedStyle.getPropertyValue('line-height'));
+    // Some browsers (webkit) report the computed line height as "normal" if it
+    // is not explicitly set in CSS, so we have to guess at the actual line
+    // height based on font size and an inaccurate approximation.
+    //
+    // More info:
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/line-height
+    // http://meyerweb.com/eric/thoughts/2008/05/06/line-height-abnormal/
+    // http://stackoverflow.com/questions/3614323/jquery-css-line-height-of-normal-px
+    var lineHeight = parseFloat(computedStyle.getPropertyValue('line-height'));
+    if (isNaN(lineHeight)) {
+        var fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
+        lineHeight = fontSize * 1.2;
+    }
+    return lineHeight;
 }
 
 function getCanvasFont(computedStyle) {
