@@ -3,11 +3,17 @@ var utils = require('./utils');
 
 function makeLines(text, targetLineLength) {
     // Use Erik Loyer's slabtype algorithm to split our input text into
-    // suitable lines. We depart from the original algorithm by requiring the
-    // ideal line length to be given instead of automagically calculated.
+    // suitable lines. We depart from the original algorithm in allowing the
+    // ideal line length to be given or using a vastly simpler heuristic to
+    // guess at the ideal line length if not.
     //
     // http://erikloyer.com/index.php/blog/the_slabtype_algorithm_part_1_background/
     var words = text.trim().split(/\s+/);
+
+    // Try to pick a reasonable target line length if none was provided.
+    if (!targetLineLength) {
+        targetLineLength = ((text.length / words.length) * 2) | 0;
+    }
 
     var lines = [];
     var preText, postText, lineText;
