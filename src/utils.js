@@ -11,6 +11,7 @@ function getLineHeight(computedStyle) {
     if (isNaN(lineHeight)) {
         var fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
         lineHeight = fontSize * 1.2;
+        console.debug('guessed line height: %o; font size: %o', lineHeight, fontSize);
     }
     return lineHeight;
 }
@@ -19,7 +20,7 @@ function getCanvasFont(computedStyle) {
     return [
         computedStyle.getPropertyValue('font-style'),
         computedStyle.getPropertyValue('font-weight'),
-        computedStyle.getPropertyValue('font-size'),
+        computedStyle.getPropertyValue('font-size') + '/1',
         computedStyle.getPropertyValue('font-family')
     ].join(' ');
 }
@@ -61,8 +62,7 @@ function prepareContext(canvasEl, computedStyle) {
     var ctx = canvasEl.getContext('2d');
     ctx.font = getCanvasFont(computedStyle);
     ctx.fillStyle = computedStyle.getPropertyValue('color');
-    ctx.testAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
     return prepareContextShadow(ctx, computedStyle);
 }
 
