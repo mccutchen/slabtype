@@ -2,6 +2,14 @@
 
 A port of [Erik Loyer's slabtype algorithm][algo] to Javascript & Canvas.
 
+## Usage
+
+A single function is exposed:
+
+```javascript
+Slabtype.layout(element, targetLineLength, width, height)
+```
+
 ## Development
 
  1. `npm install` to install dev dependencies
