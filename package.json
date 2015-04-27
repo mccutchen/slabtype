@@ -21,6 +21,7 @@
   "homepage": "https://github.com/mccutchen/slabtype",
   "devDependencies": {
     "browserify": "9.0.8",
+    "stripify": "3.0.0",
     "watchify": "3.1.2"
   },
   "main": "src/slabtype.js"

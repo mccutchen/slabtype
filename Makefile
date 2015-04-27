@@ -6,7 +6,7 @@ build_args := src/slabtype.js -o dist/slabtype.js -s Slabtype
 
 dist/slabtype.js: src/*.js
 	mkdir -p dist
-	browserify $(build_args)
+	browserify -t stripify $(build_args)
 
 watch:
 	mkdir -p dist
