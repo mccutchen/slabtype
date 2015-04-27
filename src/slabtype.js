@@ -65,8 +65,10 @@ function layout(el, targetLineLength, width, height) {
     if (canvasEl !== el) {
         canvasEl.style['height'] = height + 'px';
         canvasEl.style['width'] = width + 'px';
-        el.parentNode.replaceChild(canvasEl, el);
-        el = null;
+        while (el.firstChild) {
+          el.removeChild(el.firstChild);
+        }
+        el.appendChild(canvasEl);
     }
 
     // Figure any padding we need based on the text shadow settings of our ctx.
